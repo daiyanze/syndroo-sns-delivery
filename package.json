@@ -1,0 +1,50 @@
+{
+  "name": "syndroo-sns-delivery",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Open-source publishing infrastructure for the social web.",
+  "cloudflare": {
+    "bindings": {
+      "SYNDROO_API_KEY": {
+        "description": "Choose a long random string. API clients send it as the Syndroo Bearer token."
+      },
+      "BLUESKY_IDENTIFIER": {
+        "description": "Your Bluesky handle, for example `alice.bsky.social`."
+      },
+      "BLUESKY_PASSWORD": {
+        "description": "A Bluesky app password. Do not use your main account password."
+      },
+      "BLUESKY_HOST": {
+        "description": "The Bluesky PDS hostname. Use `bsky.social` for the default service."
+      }
+    }
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "experiments/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @syndroo/core && npm run build --workspace @syndroo/bluesky",
+    "check": "npm run build && npm run check --workspaces --if-present",
+    "test": "npm run test --workspace @syndroo/core && npm run test --workspace @syndroo/bluesky && npm run test --workspace @syndroo/cloudflare-worker",
+    "dev": "npm run dev --workspace @syndroo/cloudflare-worker",
+    "db:migrate:local": "npm run db:migrate:local --workspace @syndroo/cloudflare-worker",
+    "db:migrate:remote": "npm run db:migrate:remote --workspace @syndroo/cloudflare-worker",
+    "deploy": "npm run db:migrate:remote && wrangler deploy",
+    "bundle": "npm run bundle --workspace @syndroo/cloudflare-worker",
+    "startup": "npm run startup --workspace @syndroo/cloudflare-worker",
+    "spike:crosspost:bundle": "npm run bundle --workspace @syndroo/crosspost-cloudflare-experiment",
+    "spike:crosspost:dev": "npm run dev --workspace @syndroo/crosspost-cloudflare-experiment"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^26.4.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11",
+    "wrangler": "^4.127.1"
+  }
+}
